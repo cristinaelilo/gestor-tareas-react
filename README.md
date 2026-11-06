@@ -1,16 +1,44 @@
-# React + Vite
+![Logo-UPS](img/logoUps.png)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Gestor de Tareas - Práctica de Frameworks
 
-Currently, two official plugins are available:
+**Integrantes:**
+- Cristina Loja
+- Denisse Paredes
+- Brandon Collaguazo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+**Framework elegido:** React
 
-## React Compiler
+**Enlace cuaderno NotebookLM**: https://notebook.google.com/notebook/c1fd6dc9-7e93-4289-aed8-e8b662488572
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Bloque 1: Panorama
+* **Origen:** Creado originalmente en 2011 por Jordan Walke.
+* **Quién lo mantiene:** Meta (anteriormente Facebook) y la comunidad open source.
+* **Versión actuál:** v.19.3.
+* **Licencia:** MIT.
+* **Filosofía:** React es una biblioteca (no es un framework completo) centrada excusivamente en la creación de interfaces de usuarios interactivas mediante componentes.
 
-## Expanding the ESLint configuration
+## Bloque 2: Instalación
+* **Creación de proyecto:** Utilizamos Vite seleccionando la plantilla de React.
+* **Tiempo de configuración inicial:**
+* **Estructura:** 
+    - `public/`: Recursos estáticos que no cambian.
+    - `src/`: Contiene el código fuente, componentes y lógica principal.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Bloque 3: Componentes
+*En desarrollo*
+
+## Bloque 4: Estado y reactividad
+*En desarrollo*
+
+---
+
+## Mediciones técnicas
+| Métrica | Cómo medirla | Resultado |
+| :--- | :--- | :--- |
+| Tiempo de configuración inicial (min) | Desde instalar hasta ver corriendo | [Minutos] |
+| Líneas de código (LOC) | `npx cloc src` | Pendiente |
+| Tamaño del build de producción (KB) | Carpeta dist tras el build | Pendiente |
+| Puntaje de rendimiento Lighthouse | Chrome Dev Tools, modo móvil | Pendiente |
+| Horas totales del grupo | Registro de horas por integrante | Pendiente |
+| Dificultad percibida (1 a 5) | Promedio de los integrantes | Pendiente |
