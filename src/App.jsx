@@ -3,7 +3,11 @@ import { useState, useEffect } from 'react'
 import TaskList from './components/TaskList'
 import TaskFilter from './components/TaskFilter'
 import TaskForm from './components/TaskForm'
-import { obtenerTareas, crearTarea, editarTarea } from './services/tareasApi'
+import {
+  obtenerTareas,
+  crearTarea,
+  editarTarea
+} from './services/tareasApi'
 import './App.css'
 
 function App() {
@@ -14,13 +18,21 @@ function App() {
   const [errorFormulario, setErrorFormulario] = useState(null)
   const [filtro, setFiltro] = useState('todas')
 
+  // Obtener tareas de la API
   useEffect(() => {
     obtenerTareas()
-      .then((datos) => setTareas(datos))
-      .catch((e) => setError(e.message))
-      .finally(() => setCargando(false))
+      .then((datos) => {
+        setTareas(datos)
+      })
+      .catch((e) => {
+        setError(e.message)
+      })
+      .finally(() => {
+        setCargando(false)
+      })
   }, [])
 
+  // Crear una nueva tarea
   const manejarCrear = async (titulo) => {
     setGuardando(true)
     setErrorFormulario(null)
@@ -30,7 +42,10 @@ function App() {
 
       setTareas((anteriores) => [
         ...anteriores,
-        { ...nuevaTarea, id: crypto.randomUUID() },
+        {
+          ...nuevaTarea,
+          id: crypto.randomUUID()
+        }
       ])
 
       return true
@@ -41,43 +56,99 @@ function App() {
       setGuardando(false)
     }
   }
-  
-const manejarEditar = async (id, nuevoTitulo) => {
-  setErrorFormulario(null)
 
-  try {
-    const tareaActual = tareas.find((tarea) => tarea.id === id)
+  // Editar el título de una tarea
+  const manejarEditar = async (id, nuevoTitulo) => {
+    setErrorFormulario(null)
 
-    if (!tareaActual) return false
+    try {
+      const tareaActual = tareas.find(
+        (tarea) => tarea.id === id
+      )
 
-    if (typeof id === 'number' && id <= 200) {
-      await editarTarea(id, nuevoTitulo, tareaActual.completada)
+      if (!tareaActual) return false
+
+      if (typeof id === 'number' && id <= 200) {
+        await editarTarea(
+          id,
+          nuevoTitulo,
+          tareaActual.completada
+        )
+      }
+
+      setTareas((anteriores) =>
+        anteriores.map((tarea) =>
+          tarea.id === id
+            ? { ...tarea, titulo: nuevoTitulo }
+            : tarea
+        )
+      )
+
+      return true
+    } catch (e) {
+      setErrorFormulario(e.message)
+      return false
+    }
+  }
+
+  // Cambiar una tarea a hecha o pendiente
+  const manejarCambiarEstado = async (id) => {
+    setErrorFormulario(null)
+
+    try {
+      const tareaActual = tareas.find(
+        (tarea) => tarea.id === id
+      )
+
+      if (!tareaActual) return false
+
+      const nuevoEstado = !tareaActual.completada
+
+      if (typeof id === 'number' && id <= 200) {
+        await editarTarea(
+          id,
+          tareaActual.titulo,
+          nuevoEstado
+        )
+      }
+
+      setTareas((anteriores) =>
+        anteriores.map((tarea) =>
+          tarea.id === id
+            ? { ...tarea, completada: nuevoEstado }
+            : tarea
+        )
+      )
+
+      return true
+    } catch (e) {
+      setErrorFormulario(e.message)
+      return false
+    }
+  }
+
+  // Filtrar las tareas
+  const tareasFiltradas = tareas.filter((tarea) => {
+    if (filtro === 'pendientes') {
+      return !tarea.completada
     }
 
-    setTareas((anteriores) =>
-      anteriores.map((tarea) =>
-        tarea.id === id
-          ? { ...tarea, titulo: nuevoTitulo }
-          : tarea
-      )
-    )
+    if (filtro === 'hechas') {
+      return tarea.completada
+    }
 
-    return true
-  } catch (e) {
-    setErrorFormulario(e.message)
-    return false
-  }
-}
-
-
-  const tareasFiltradas = tareas.filter((tarea) => {
-    if (filtro === 'pendientes') return !tarea.completada
-    if (filtro === 'hechas') return tarea.completada
     return true
   })
 
-  if (cargando) return <p>Cargando tareas...</p>
-  if (error) return <p>Error: {error}</p>
+  // Mostrar mensaje mientras cargan las tareas
+  if (cargando) {
+    return <p>Cargando tareas...</p>
+  }
+
+  // Mostrar error si falla la API
+  if (error) {
+    return <p>Error: {error}</p>
+  }
 
   return (
     <div>
@@ -89,7 +160,9 @@ const manejarEditar = async (id, nuevoTitulo) => {
       />
 
       {errorFormulario && (
-        <p role="alert">Error: {errorFormulario}</p>
+        <p role="alert">
+          Error: {errorFormulario}
+        </p>
       )}
 
       <TaskFilter
@@ -97,9 +170,10 @@ const manejarEditar = async (id, nuevoTitulo) => {
         onCambiarFiltro={setFiltro}
       />
 
-      <TaskList 
-      tareas={tareasFiltradas} 
-      onEditar={manejarEditar}
+      <TaskList
+        tareas={tareasFiltradas}
+        onEditar={manejarEditar}
+        onCambiarEstado={manejarCambiarEstado}
       />
     </div>
   )

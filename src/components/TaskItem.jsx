@@ -1,36 +1,34 @@
 
 import { useState } from 'react'
 
-function TaskItem({ id, titulo, completada, onEditar }) {
+function TaskItem({ id, titulo, completada, onEditar, onCambiarEstado }) {
   const [editando, setEditando] = useState(false)
   const [nuevoTitulo, setNuevoTitulo] = useState(titulo)
   const [guardando, setGuardando] = useState(false)
 
   const guardarCambios = async () => {
-    console.log('Botón Guardar presionado:', id, nuevoTitulo)
-
     const texto = nuevoTitulo.trim()
 
-    if (!texto) {
-      alert('Escribe un título para la tarea')
-      return
-    }
-
-    if (typeof onEditar !== 'function') {
-      console.error('No se recibió la función onEditar')
-      return
-    }
+    if (!texto) return
 
     setGuardando(true)
 
     try {
-      const resultado = await onEditar(id, texto)
+      const correcto = await onEditar(id, texto)
 
-      if (resultado) {
+      if (correcto) {
         setEditando(false)
       }
-    } catch (error) {
-      console.error('Error al guardar:', error)
+    } finally {
+      setGuardando(false)
+    }
+  }
+
+  const cambiarEstado = async () => {
+    setGuardando(true)
+
+    try {
+      await onCambiarEstado(id)
     } finally {
       setGuardando(false)
     }
@@ -52,7 +50,7 @@ function TaskItem({ id, titulo, completada, onEditar }) {
             onClick={guardarCambios}
             disabled={guardando}
           >
-            {guardando ? 'Guardando...' : 'Guardar'}
+            Guardar
           </button>
 
           <button
@@ -72,7 +70,9 @@ function TaskItem({ id, titulo, completada, onEditar }) {
             {titulo}
           </span>
 
-          <span>{completada ? 'Hecha' : 'Pendiente'}</span>
+          <span>
+            {completada ? 'Hecha' : 'Pendiente'}
+          </span>
 
           <button
             type="button"
@@ -80,12 +80,17 @@ function TaskItem({ id, titulo, completada, onEditar }) {
               setNuevoTitulo(titulo)
               setEditando(true)
             }}
+            disabled={guardando}
           >
             Editar
           </button>
 
-          <button type="button">
-            Marcar como hecha
+          <button
+            type="button"
+            onClick={cambiarEstado}
+            disabled={guardando}
+          >
+            {completada ? 'Marcar como pendiente' : 'Marcar como hecha'}
           </button>
         </>
       )}

@@ -1,7 +1,7 @@
 
 import TaskItem from './TaskItem'
 
-function TaskList({ tareas, onEditar }) {
+function TaskList({ tareas, onEditar, onCambiarEstado }) {
   return (
     <ul>
       {tareas.map((tarea) => (
@@ -11,6 +11,7 @@ function TaskList({ tareas, onEditar }) {
           titulo={tarea.titulo}
           completada={tarea.completada}
           onEditar={onEditar}
+          onCambiarEstado={onCambiarEstado}
         />
       ))}
     </ul>
