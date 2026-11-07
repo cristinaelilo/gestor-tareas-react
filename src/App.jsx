@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import TaskList from './components/TaskList'
+import TaskFilter from './components/TaskFilter'
 import './App.css'
 
 const tareas = [
@@ -8,10 +10,19 @@ const tareas = [
 ]
 
 function App() {
+  const [filtro, setFiltro] = useState('todas')
+
+  const tareasFiltradas = tareas.filter((tarea) => {
+    if (filtro === 'pendientes') return !tarea.completada
+    if (filtro === 'hechas') return tarea.completada
+    return true
+  })
+
   return (
     <div>
       <h1>Gestor de tareas del curso</h1>
-      <TaskList tareas={tareas} />
+      <TaskFilter filtroActual={filtro} onCambiarFiltro={setFiltro} />
+      <TaskList tareas={tareasFiltradas} />
     </div>
   )
 }

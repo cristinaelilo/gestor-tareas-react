@@ -15,3 +15,14 @@
 ul {
   padding: 0;
 }
+
+.task-filter {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.task-filter .activo {
+  background: #646cff;
+  color: white;
+}
