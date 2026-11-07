@@ -1,8 +1,9 @@
 
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import TaskList from './components/TaskList'
 import TaskFilter from './components/TaskFilter'
 import TaskForm from './components/TaskForm'
+import { useTareas } from './context/TareasContext'
 import {
   obtenerTareas,
   crearTarea,
@@ -12,14 +13,23 @@ import {
 import './App.css'
 
 function App() {
-  const [tareas, setTareas] = useState([])
-  const [cargando, setCargando] = useState(true)
-  const [guardando, setGuardando] = useState(false)
-  const [error, setError] = useState(null)
-  const [errorFormulario, setErrorFormulario] = useState(null)
-  const [filtro, setFiltro] = useState('todas')
+  // Estados compartidos mediante Context API
+  const {
+    tareas,
+    setTareas,
+    cargando,
+    setCargando,
+    guardando,
+    setGuardando,
+    error,
+    setError,
+    errorFormulario,
+    setErrorFormulario,
+    filtro,
+    setFiltro
+  } = useTareas()
 
-  // Obtener las tareas desde la API
+  // GET: obtener las tareas
   useEffect(() => {
     obtenerTareas()
       .then((datos) => {
@@ -31,9 +41,9 @@ function App() {
       .finally(() => {
         setCargando(false)
       })
-  }, [])
+  }, [setTareas, setError, setCargando])
 
-  // Crear una nueva tarea
+  // POST: crear una tarea
   const manejarCrear = async (titulo) => {
     setGuardando(true)
     setErrorFormulario(null)
@@ -58,7 +68,7 @@ function App() {
     }
   }
 
-  // Editar el titulo de una tarea
+  // PUT: editar una tarea
   const manejarEditar = async (id, nuevoTitulo) => {
     setErrorFormulario(null)
 
@@ -92,7 +102,7 @@ function App() {
     }
   }
 
-  // Cambiar el estado de una tarea
+  // PUT: cambiar el estado de una tarea
   const manejarCambiarEstado = async (id) => {
     setErrorFormulario(null)
 
@@ -128,7 +138,7 @@ function App() {
     }
   }
 
-  // Eliminar una tarea
+  // DELETE: eliminar una tarea
   const manejarEliminar = async (id) => {
     setErrorFormulario(null)
 
@@ -161,12 +171,10 @@ function App() {
     return true
   })
 
-  // Mostrar mensaje de carga
   if (cargando) {
     return <p>Cargando tareas...</p>
   }
 
-  // Mostrar error si falla la API
   if (error) {
     return <p>Error: {error}</p>
   }
