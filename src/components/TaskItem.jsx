@@ -1,11 +1,19 @@
 
 import { useState } from 'react'
 
-function TaskItem({ id, titulo, completada, onEditar, onCambiarEstado }) {
+function TaskItem({
+  id,
+  titulo,
+  completada,
+  onEditar,
+  onCambiarEstado,
+  onEliminar
+}) {
   const [editando, setEditando] = useState(false)
   const [nuevoTitulo, setNuevoTitulo] = useState(titulo)
   const [guardando, setGuardando] = useState(false)
 
+  // Guardar cambios del título
   const guardarCambios = async () => {
     const texto = nuevoTitulo.trim()
 
@@ -24,11 +32,29 @@ function TaskItem({ id, titulo, completada, onEditar, onCambiarEstado }) {
     }
   }
 
+  // Cambiar el estado de la tarea
   const cambiarEstado = async () => {
     setGuardando(true)
 
     try {
       await onCambiarEstado(id)
+    } finally {
+      setGuardando(false)
+    }
+  }
+
+  // Eliminar la tarea
+  const eliminar = async () => {
+    const confirmar = window.confirm(
+      '¿Estás seguro de que deseas eliminar esta tarea?'
+    )
+
+    if (!confirmar) return
+
+    setGuardando(true)
+
+    try {
+      await onEliminar(id)
     } finally {
       setGuardando(false)
     }
@@ -50,7 +76,7 @@ function TaskItem({ id, titulo, completada, onEditar, onCambiarEstado }) {
             onClick={guardarCambios}
             disabled={guardando}
           >
-            Guardar
+            {guardando ? 'Guardando...' : 'Guardar'}
           </button>
 
           <button
@@ -90,7 +116,17 @@ function TaskItem({ id, titulo, completada, onEditar, onCambiarEstado }) {
             onClick={cambiarEstado}
             disabled={guardando}
           >
-            {completada ? 'Marcar como pendiente' : 'Marcar como hecha'}
+            {completada
+              ? 'Marcar como pendiente'
+              : 'Marcar como hecha'}
+          </button>
+
+          <button
+            type="button"
+            onClick={eliminar}
+            disabled={guardando}
+          >
+            Eliminar
           </button>
         </>
       )}

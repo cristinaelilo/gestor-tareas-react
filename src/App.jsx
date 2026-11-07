@@ -6,7 +6,8 @@ import TaskForm from './components/TaskForm'
 import {
   obtenerTareas,
   crearTarea,
-  editarTarea
+  editarTarea,
+  eliminarTarea
 } from './services/tareasApi'
 import './App.css'
 
@@ -18,7 +19,7 @@ function App() {
   const [errorFormulario, setErrorFormulario] = useState(null)
   const [filtro, setFiltro] = useState('todas')
 
-  // Obtener tareas de la API
+  // Obtener las tareas desde la API
   useEffect(() => {
     obtenerTareas()
       .then((datos) => {
@@ -57,7 +58,7 @@ function App() {
     }
   }
 
-  // Editar el título de una tarea
+  // Editar el titulo de una tarea
   const manejarEditar = async (id, nuevoTitulo) => {
     setErrorFormulario(null)
 
@@ -91,7 +92,7 @@ function App() {
     }
   }
 
-  // Cambiar una tarea a hecha o pendiente
+  // Cambiar el estado de una tarea
   const manejarCambiarEstado = async (id) => {
     setErrorFormulario(null)
 
@@ -127,6 +128,26 @@ function App() {
     }
   }
 
+  // Eliminar una tarea
+  const manejarEliminar = async (id) => {
+    setErrorFormulario(null)
+
+    try {
+      if (typeof id === 'number' && id <= 200) {
+        await eliminarTarea(id)
+      }
+
+      setTareas((anteriores) =>
+        anteriores.filter((tarea) => tarea.id !== id)
+      )
+
+      return true
+    } catch (e) {
+      setErrorFormulario(e.message)
+      return false
+    }
+  }
+
   // Filtrar las tareas
   const tareasFiltradas = tareas.filter((tarea) => {
     if (filtro === 'pendientes') {
@@ -140,7 +161,7 @@ function App() {
     return true
   })
 
-  // Mostrar mensaje mientras cargan las tareas
+  // Mostrar mensaje de carga
   if (cargando) {
     return <p>Cargando tareas...</p>
   }
@@ -174,6 +195,7 @@ function App() {
         tareas={tareasFiltradas}
         onEditar={manejarEditar}
         onCambiarEstado={manejarCambiarEstado}
+        onEliminar={manejarEliminar}
       />
     </div>
   )

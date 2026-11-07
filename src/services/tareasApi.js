@@ -69,3 +69,15 @@ export async function editarTarea(id, titulo, completada) {
     completada: datos.completed,
   }
 }
+
+export async function eliminarTarea(id) {
+  const respuesta = await fetch(`${URL}/${id}`, {
+    method: 'DELETE',
+  })
+
+  if (!respuesta.ok) {
+    throw new Error('No se pudo eliminar la tarea')
+  }
+
+  return true
+}
