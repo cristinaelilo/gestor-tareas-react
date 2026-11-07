@@ -335,3 +335,310 @@ Se usaron reglas de CSS propio y una media query (`@media (max-width: 600px)`) p
 - [Documentación oficial de Vite](https://vite.dev/)
 - [Documentación de npm](https://docs.npmjs.com/)
 - [Documentación de ESLint](https://eslint.org/)
+
+
+
+## 10. Bloques 4 y 5: Estado global, consumo de API y operaciones CRUD
+
+### 10.1. Consumo de API con GET
+
+Para obtener las tareas se utilizó la API pública JSONPlaceholder, que proporciona datos de prueba para desarrollar aplicaciones.
+
+Se creó el archivo `src/services/tareasApi.js`, donde se implementó la función `obtenerTareas()` utilizando `fetch()`.
+
+```javascript
+const URL = 'https://jsonplaceholder.typicode.com/todos'
+
+export async function obtenerTareas() {
+  const respuesta = await fetch(`${URL}?_limit=10`)
+
+  if (!respuesta.ok) {
+    throw new Error('No se pudieron cargar las tareas')
+  }
+
+  const datos = await respuesta.json()
+
+  return datos.map((tarea) => ({
+    id: tarea.id,
+    titulo: tarea.title,
+    completada: tarea.completed,
+  }))
+}
+```
+
+Esta función permite obtener 10 tareas y adaptar los datos recibidos a la estructura utilizada en la aplicación.
+
+**Evidencia del consumo de API:**
+
+![Consumo de API](docs/evidencias/08-consumo-Api.png)
+
+**Evidencia de las tareas obtenidas:**
+
+![Tareas obtenidas desde JSONPlaceholder](docs/evidencias/09-tareas-desde-Api.png)
+
+### 10.2. Manejo de carga y errores
+
+Se implementaron estados de carga y error para controlar las peticiones realizadas a la API.
+
+En `App.jsx` se utilizó `useEffect()` para ejecutar la consulta inicial y actualizar el estado de las tareas.
+
+```jsx
+useEffect(() => {
+  obtenerTareas()
+    .then((datos) => {
+      setTareas(datos)
+    })
+    .catch((e) => {
+      setError(e.message)
+    })
+    .finally(() => {
+      setCargando(false)
+    })
+}, [setTareas, setError, setCargando])
+```
+
+Mientras se obtienen los datos se muestra el mensaje `Cargando tareas...`.
+
+Si ocurre un problema durante la petición, la aplicación muestra un mensaje de error.
+
+Para comprobar esta funcionalidad se utilizó temporalmente una dirección incorrecta de la API. Después de verificar el mensaje, se restauró la dirección original.
+
+**Evidencia del manejo de errores:**
+
+![Manejo de errores](docs/evidencias/10-error-api.png)
+
+### 10.3. Creación de tareas con POST
+
+Para registrar nuevas tareas se implementó el método POST mediante la función `crearTarea()`.
+
+```javascript
+export async function crearTarea(titulo) {
+  const respuesta = await fetch(URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      title: titulo,
+      completed: false,
+      userId: 1,
+    }),
+  })
+
+  if (!respuesta.ok) {
+    throw new Error('No se pudo crear la tarea')
+  }
+
+  const datos = await respuesta.json()
+
+  return {
+    id: datos.id,
+    titulo: datos.title,
+    completada: datos.completed,
+  }
+}
+```
+
+También se creó el componente `TaskForm.jsx`, que permite ingresar el título de una tarea y agregarla mediante el botón **Agregar tarea**.
+
+Cuando la petición se realiza correctamente, la nueva tarea se incorpora a la lista y aparece como pendiente.
+
+**Evidencia de creación de tareas:**
+
+![Creación de tareas con POST](docs/evidencias/11-Crear-Tarea.png)
+
+### 10.4. Edición de tareas con PUT
+
+Se implementó la función `editarTarea()` para actualizar la información de una tarea utilizando el método PUT.
+
+```javascript
+export async function editarTarea(id, titulo, completada) {
+  const respuesta = await fetch(`${URL}/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      id,
+      title: titulo,
+      completed: completada,
+      userId: 1,
+    }),
+  })
+
+  if (!respuesta.ok) {
+    throw new Error('No se pudo editar la tarea')
+  }
+
+  const datos = await respuesta.json()
+
+  return {
+    id: datos.id,
+    titulo: datos.title,
+    completada: datos.completed,
+  }
+}
+```
+
+En `TaskItem.jsx` se agregó el botón **Editar**, que permite modificar el título de una tarea y guardar los cambios.
+
+**Evidencia de edición de tareas:**
+
+![Edición de tareas con PUT](docs/evidencias/12-Editar-Tarea.png)
+
+### 10.5. Cambio de estado de las tareas
+
+Se implementó una función para cambiar las tareas entre los estados pendiente y hecha.
+
+Para realizar el cambio se utiliza la función `editarTarea()` con el nuevo valor de `completada`.
+
+```javascript
+const nuevoEstado = !tareaActual.completada
+
+if (typeof id === 'number' && id <= 200) {
+  await editarTarea(
+    id,
+    tareaActual.titulo,
+    nuevoEstado
+  )
+}
+
+setTareas((anteriores) =>
+  anteriores.map((tarea) =>
+    tarea.id === id
+      ? { ...tarea, completada: nuevoEstado }
+      : tarea
+  )
+)
+```
+
+Cuando una tarea está completada, su título aparece tachado y el botón cambia a **Marcar como pendiente**.
+
+**Evidencia del cambio de estado:**
+
+![Cambio de estado de tareas](docs/evidencias/13-Cambiar-Estado.png)
+
+### 10.6. Eliminación de tareas con DELETE
+
+Se implementó la función `eliminarTarea()` para realizar peticiones DELETE a JSONPlaceholder.
+
+```javascript
+export async function eliminarTarea(id) {
+  const respuesta = await fetch(`${URL}/${id}`, {
+    method: 'DELETE',
+  })
+
+  if (!respuesta.ok) {
+    throw new Error('No se pudo eliminar la tarea')
+  }
+
+  return true
+}
+```
+
+En `TaskItem.jsx` se incorporó el botón **Eliminar**. Antes de realizar la operación, se muestra una ventana de confirmación.
+
+Después de confirmar la eliminación y completar correctamente la operación, la tarea desaparece de la lista.
+
+**Evidencia de eliminación de tareas:**
+
+![Eliminación de tareas con DELETE](docs/evidencias/14-Eliminar-Tarea.png)
+
+### 10.7. Estado global con Context API
+
+Para compartir la información de las tareas entre los componentes se implementó Context API de React.
+
+Se creó el archivo `src/context/TareasContext.jsx`, que contiene los estados principales de la aplicación.
+
+```jsx
+import { createContext, useContext, useState } from 'react'
+
+const TareasContext = createContext(null)
+
+export function TareasProvider({ children }) {
+  const [tareas, setTareas] = useState([])
+  const [cargando, setCargando] = useState(true)
+  const [error, setError] = useState(null)
+  const [errorFormulario, setErrorFormulario] = useState(null)
+  const [guardando, setGuardando] = useState(false)
+  const [filtro, setFiltro] = useState('todas')
+
+  return (
+    <TareasContext.Provider
+      value={{
+        tareas,
+        setTareas,
+        cargando,
+        setCargando,
+        error,
+        setError,
+        errorFormulario,
+        setErrorFormulario,
+        guardando,
+        setGuardando,
+        filtro,
+        setFiltro
+      }}
+    >
+      {children}
+    </TareasContext.Provider>
+  )
+}
+
+export function useTareas() {
+  const contexto = useContext(TareasContext)
+
+  if (!contexto) {
+    throw new Error(
+      'useTareas debe usarse dentro de TareasProvider'
+    )
+  }
+
+  return contexto
+}
+```
+
+En `main.jsx` se incorporó `TareasProvider` para envolver el componente principal `App`.
+
+Posteriormente, `App.jsx` comenzó a utilizar `useTareas()` para acceder a los estados compartidos.
+
+De esta manera, la información de las tareas, los filtros, los errores y los procesos de carga puede compartirse entre componentes.
+
+**Evidencia de implementación de Context API:**
+
+![Estado global con Context API](docs/evidencias/15-Estado-Global.png)
+
+### 10.8. Resultados obtenidos
+
+Durante el desarrollo se implementaron y comprobaron las siguientes funcionalidades:
+
+| Funcionalidad | Resultado |
+|---|---|
+| GET | Obtención de tareas desde JSONPlaceholder. |
+| POST | Creación de nuevas tareas. |
+| PUT | Edición de títulos de tareas. |
+| PUT | Cambio de estado entre pendiente y hecha. |
+| DELETE | Eliminación de tareas de la lista. |
+| Context API | Administración del estado compartido de la aplicación. |
+| Manejo de carga | Visualización de un mensaje durante la consulta. |
+| Manejo de errores | Presentación de mensajes cuando falla una operación. |
+| Filtros | Visualización de todas las tareas, pendientes o hechas. |
+
+JSONPlaceholder simula las operaciones POST, PUT y DELETE, por lo que los cambios no se guardan permanentemente en su servidor. La aplicación mantiene las modificaciones en el estado de React durante la sesión.
+
+### 10.9. Control de versiones
+
+El desarrollo de estas funcionalidades se realizó en la rama `feature/api-crud`.
+
+Se registraron los avances mediante commits y posteriormente se subieron al repositorio de GitHub.
+
+También se creó un Pull Request dirigido a la rama `main` para integrar el trabajo al proyecto compartido.
+
+### 10.10. Fuentes de consulta
+
+- [Documentación oficial de React](https://react.dev/)
+- [React – createContext](https://react.dev/reference/react/createContext)
+- [React – useContext](https://react.dev/reference/react/useContext)
+- [React – useEffect](https://react.dev/reference/react/useEffect)
+- [MDN – Fetch API](https://developer.mozilla.org/es/docs/Web/API/Fetch_API)
+- [JSONPlaceholder](https://jsonplaceholder.typicode.com/)
