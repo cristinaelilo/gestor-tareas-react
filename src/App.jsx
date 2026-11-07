@@ -121,9 +121,6 @@ function App() {
 
   return (
     <BrowserRouter>
-      <nav style={{ padding: '10px', background: '#eee', marginBottom: '20px' }}>
-        <Link to="/">Ir al Listado</Link> | <Link to="/detalle/1">Ver Detalle de prueba</Link>
-      </nav>
 
       <Routes>
         <Route path="/" element={<VistaPrincipal />} />
