@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import TaskList from './components/TaskList'
 import TaskFilter from './components/TaskFilter'
 import TaskForm from './components/TaskForm'
-import { obtenerTareas, crearTarea } from './services/tareasApi'
+import { obtenerTareas, crearTarea, editarTarea } from './services/tareasApi'
 import './App.css'
 
 function App() {
@@ -41,6 +41,34 @@ function App() {
       setGuardando(false)
     }
   }
+  
+const manejarEditar = async (id, nuevoTitulo) => {
+  setErrorFormulario(null)
+
+  try {
+    const tareaActual = tareas.find((tarea) => tarea.id === id)
+
+    if (!tareaActual) return false
+
+    if (typeof id === 'number' && id <= 200) {
+      await editarTarea(id, nuevoTitulo, tareaActual.completada)
+    }
+
+    setTareas((anteriores) =>
+      anteriores.map((tarea) =>
+        tarea.id === id
+          ? { ...tarea, titulo: nuevoTitulo }
+          : tarea
+      )
+    )
+
+    return true
+  } catch (e) {
+    setErrorFormulario(e.message)
+    return false
+  }
+}
+
 
   const tareasFiltradas = tareas.filter((tarea) => {
     if (filtro === 'pendientes') return !tarea.completada
@@ -69,7 +97,10 @@ function App() {
         onCambiarFiltro={setFiltro}
       />
 
-      <TaskList tareas={tareasFiltradas} />
+      <TaskList 
+      tareas={tareasFiltradas} 
+      onEditar={manejarEditar}
+      />
     </div>
   )
 }

@@ -42,3 +42,30 @@ export async function crearTarea(titulo) {
     completada: datos.completed,
   }
 }
+
+export async function editarTarea(id, titulo, completada) {
+  const respuesta = await fetch(`${URL}/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      id,
+      title: titulo,
+      completed: completada,
+      userId: 1,
+    }),
+  })
+
+  if (!respuesta.ok) {
+    throw new Error('No se pudo editar la tarea')
+  }
+
+  const datos = await respuesta.json()
+
+  return {
+    id: datos.id,
+    titulo: datos.title,
+    completada: datos.completed,
+  }
+}
