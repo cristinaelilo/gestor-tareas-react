@@ -1,0 +1,17 @@
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  list-style: none;
+}
+
+.tachado {
+  text-decoration: line-through;
+  color: #888;
+}
+
+ul {
+  padding: 0;
+}
