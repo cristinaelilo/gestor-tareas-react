@@ -16,3 +16,29 @@ export async function obtenerTareas() {
     completada: tarea.completed,
   }))
 }
+
+export async function crearTarea(titulo) {
+  const respuesta = await fetch(URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      title: titulo,
+      completed: false,
+      userId: 1,
+    }),
+  })
+
+  if (!respuesta.ok) {
+    throw new Error('No se pudo crear la tarea')
+  }
+
+  const datos = await respuesta.json()
+
+  return {
+    id: datos.id,
+    titulo: datos.title,
+    completada: datos.completed,
+  }
+}
