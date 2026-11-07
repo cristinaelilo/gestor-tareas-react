@@ -20,7 +20,7 @@ describe('Pruebas del enrutador base (App)', () => {
 
     it('Prueba 3: Renderiza la pantalla de Listado por defecto', () => {
         render(<App />);
-        expect(screen.getByText('Pantalla: Lista de Tareas')).toBeDefined();
+        expect(screen.getByText('Gestor de tareas del curso')).toBeDefined();
     });
 
 });
