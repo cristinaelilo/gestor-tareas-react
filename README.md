@@ -38,8 +38,8 @@
 | Métrica | Cómo medirla | Resultado |
 | :--- | :--- | :--- |
 | Tiempo de configuración inicial (min) | Desde instalar hasta ver corriendo | [Minutos] |
-| Líneas de código (LOC) | `npx cloc src` | Pendiente |
-| Tamaño del build de producción (KB) | Carpeta dist tras el build | Pendiente |
+| Líneas de código (LOC) | `npx cloc src` | ~40 líneas |
+| Tamaño del build de producción (KB) | Carpeta dist tras el build | JS: 257.95 kB / CSS: 1.78 kB |
 | Puntaje de rendimiento Lighthouse | Chrome Dev Tools, modo móvil | Pendiente |
 | Horas totales del grupo | Registro de horas por integrante | Pendiente |
 | Dificultad percibida (1 a 5) | Promedio de los integrantes | Pendiente |
