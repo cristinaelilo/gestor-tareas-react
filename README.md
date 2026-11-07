@@ -24,6 +24,7 @@
 * **Estructura:** 
     - `public/`: Recursos estáticos que no cambian.
     - `src/`: Contiene el código fuente, componentes y lógica principal.
+    - `img/`: Contiene las imágenes, capturas de pantalla y recursos gráficos del informe.
 
 ## Bloque 3: Componentes
 *En desarrollo*
@@ -42,3 +43,7 @@
 | Puntaje de rendimiento Lighthouse | Chrome Dev Tools, modo móvil | Pendiente |
 | Horas totales del grupo | Registro de horas por integrante | Pendiente |
 | Dificultad percibida (1 a 5) | Promedio de los integrantes | Pendiente |
+
+## Bloque 5: Rutas Y API
+* **Enrutador:** Utilizamos `react-router-dom` para manejar la navegación entre las vistas de "listado" y "detalle" sin recargar la página.
+* **Error resuelto:** Al configurar las rutas, nos topamos con una pantalla negra y el error `Uncaught ReferenceError: Listado is not defined`. Lo solucionamos importando explícitamente los componentes al inicio de `App.jsx` y corrigiendo la sintaxis, ya que React exige que los componentes comiencen con letra mayúscula para no confundirlos con etiquetas HTML.
