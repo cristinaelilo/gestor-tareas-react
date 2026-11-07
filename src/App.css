@@ -1,3 +1,23 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+}
+
+#root {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+h1 {
+  font-size: 1.8rem;
+}
+
+ul {
+  padding: 0;
+}
+
 .task-item {
   display: flex;
   align-items: center;
@@ -7,13 +27,13 @@
   list-style: none;
 }
 
+.task-item span:first-child {
+  flex: 1; /* el título ocupa el espacio libre */
+}
+
 .tachado {
   text-decoration: line-through;
   color: #888;
-}
-
-ul {
-  padding: 0;
 }
 
 .task-filter {
@@ -25,4 +45,20 @@ ul {
 .task-filter .activo {
   background: #646cff;
   color: white;
+}
+
+/* Pantallas pequeñas (celular) */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 1.4rem;
+  }
+
+  .task-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .task-filter {
+    flex-wrap: wrap;
+  }
 }

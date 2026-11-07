@@ -195,7 +195,9 @@ index.html  →  main.jsx  →  App.jsx
 | `createRoot(document.getElementById('root'))` | Busca el `div` con id `root` y crea ahí la raíz de la aplicación. |
 | `.render(<StrictMode><App /></StrictMode>)` | Dibuja `App` dentro de la raíz. `StrictMode` no se ve en pantalla: en desarrollo ayuda a detectar errores. |
 
-### 5.4. `App.jsx`
+### 5.4. `App.jsx` (plantilla inicial de Vite)
+
+La explicación corresponde al `App.jsx` que genera Vite. Luego se reemplazó por el código propio del proyecto, descrito en las secciones 6 y 7.
 
 | Elemento | Explicación |
 |---|---|
@@ -208,14 +210,126 @@ index.html  →  main.jsx  →  App.jsx
 | `onClick={() => setCount((count) => count + 1)}` | Evento de clic. Se pasa una función que actualiza el estado; al cambiar el estado, React vuelve a dibujar el componente con el nuevo valor. |
 | `import heroImg from './assets/hero.png'` | Importa una imagen para poder usarla en el JSX. |
 
-## 6. Registro de dificultades y soluciones
+
+## 6. Bloque 3: Componentes
+
+Un componente en React es una función que recibe datos y devuelve JSX, es decir, la parte de la interfaz que se muestra. Permite dividir la aplicación en piezas pequeñas y reutilizables.
+
+### 6.1. Componentes de la aplicación
+
+| Componente | Función |
+|---|---|
+| `TaskItem` | Muestra una tarea: título, estado y botón. |
+| `TaskList` | Recibe un arreglo de tareas y muestra un `TaskItem` por cada una. |
+| `TaskFilter` | Muestra los botones Todas, Pendientes y Hechas. |
+
+### 6.2. Componente reutilizable: `TaskItem`
+
+```jsx
+function TaskItem({ titulo, completada }) {
+  return (
+    <li className="task-item">
+      <span className={completada ? 'tachado' : ''}>{titulo}</span>
+      <span>{completada ? 'Hecha' : 'Pendiente'}</span>
+      <button type="button">Marcar como hecha</button>
+    </li>
+  )
+}
+
+export default TaskItem
+```
+
+`TaskItem` se usó tres veces con datos distintos:
+
+```jsx
+<TaskItem titulo="Leer documentación de React" completada={false} />
+<TaskItem titulo="Crear el repositorio" completada={true} />
+<TaskItem titulo="Hacer el componente TaskItem" completada={false} />
+```
+
+![TaskItem usado tres veces](docs/evidencias/03-taskitem-reutilizado.png)
+
+### 6.3. Temas del bloque
+
+| Tema | Qué es y para qué sirve | Ejemplo propio |
+|---|---|---|
+| Componentes y JSX | Funciones que devuelven JSX, una sintaxis parecida al HTML dentro de JavaScript. | `TaskItem`, `TaskList` y `TaskFilter`. |
+| Props | Datos que un componente recibe de quien lo usa. Permiten reutilizarlo con información distinta. | `TaskItem` recibe `titulo` y `completada`. |
+| Renderizado condicional | Mostrar un contenido u otro según una condición. | `completada ? 'Hecha' : 'Pendiente'` y título tachado con la clase `tachado`. |
+| Listas y `key` | Se recorre un arreglo con `.map()` para generar un componente por elemento. `key` identifica cada elemento. | `TaskList` usa `tareas.map(...)` con `key={tarea.id}`. |
+| Eventos | Acciones del usuario, como un clic, que ejecutan una función. | `onClick={() => onCambiarFiltro('pendientes')}` en `TaskFilter`. |
+
+### 6.4. Error encontrado: falta de `key`
+
+Al crear `TaskList` sin la prop `key`, la consola mostró el error `Each child in a list should have a unique "key" prop`. Se solucionó agregando `key={tarea.id}` a cada `TaskItem`.
+
+![Error de key en la consola](docs/evidencias/04-error-key.png)
+
+## 7. Bloque 4: Estado y reactividad
+
+### 7.1. Estado con `useState`
+
+El estado es la información que un componente recuerda y que, al cambiar, hace que React vuelva a dibujar la pantalla. En `App.jsx` se guarda el filtro actual:
+
+```jsx
+const [filtro, setFiltro] = useState('todas')
+```
+
+`filtro` es el valor actual, `setFiltro` es la función para cambiarlo y `'todas'` es el valor inicial. Al llamar a `setFiltro`, React actualiza la interfaz.
+
+### 7.2. Estado compartido entre dos componentes
+
+El filtro lo cambia `TaskFilter` y lo necesita `TaskList`. Como ambos son hijos de `App`, el estado se guarda en `App` y se les pasa por props:
+
+```jsx
+function App() {
+  const [filtro, setFiltro] = useState('todas')
+
+  const tareasFiltradas = tareas.filter((tarea) => {
+    if (filtro === 'pendientes') return !tarea.completada
+    if (filtro === 'hechas') return tarea.completada
+    return true
+  })
+
+  return (
+    <div>
+      <h1>Gestor de tareas del curso</h1>
+      <TaskFilter filtroActual={filtro} onCambiarFiltro={setFiltro} />
+      <TaskList tareas={tareasFiltradas} />
+    </div>
+  )
+}
+```
+
+| Componente | Cómo participa |
+|---|---|
+| `App` | Guarda el estado `filtro` y calcula las tareas filtradas. |
+| `TaskFilter` | Recibe `filtroActual` y la función `onCambiarFiltro`; avisa a `App` cuando se pulsa un botón. |
+| `TaskList` | Recibe las tareas ya filtradas y las muestra. |
+
+![Filtro de tareas funcionando](docs/evidencias/05-filtro-tareas.png)
+
+### 7.3. Diseño responsive
+
+Se usaron reglas de CSS propio y una media query (`@media (max-width: 600px)`) para adaptar la aplicación a pantallas pequeñas.
+
+![Vista en escritorio](docs/evidencias/07-responsive-escritorio.png)
+
+![Vista en móvil](docs/evidencias/06-responsive-movil.png)
+
+### 7.4. Estado global
+
+*Pendiente: se documentará cuando se implemente el estado global de las tareas (Context API o Zustand).*
+
+## 8. Registro de dificultades y soluciones
 
 | Dificultad encontrada | Solución aplicada |
 |---|---|
 | Al ejecutar `git commit` inicialmente apareció `nothing to commit`. | Se identificó que la carpeta todavía no contenía archivos del proyecto. Se continuó con la creación de React mediante Vite. |
 | Al finalizar `npm install` apareció el aviso de 4 vulnerabilidades moderadas. | Se ejecutó `npm audit` y se identificó que el origen era `minimatch@10.2.6` (denegación de servicio por patrones), que llega como dependencia de `eslint@10.14.0`, una herramienta solo de desarrollo. Con `npm audit --omit=dev` se comprobó que las dependencias de producción tienen 0 vulnerabilidades. No se aplicó `npm audit fix --force` porque instalaría una versión anterior de ESLint (cambio incompatible) y podría romper la configuración. Se decidió mantener las versiones actuales y volver a revisar con `npm audit` más adelante. |
+| En la consola apareció el error `Each child in a list should have a unique "key" prop` al renderizar `TaskList` con `.map()`. | Se agregó la prop `key={tarea.id}` a cada `TaskItem`. React usa `key` para identificar cada elemento de la lista y saber cuál cambió, se agregó o se eliminó. Debe ser único entre hermanos y estable, por eso se usa el `id` de la tarea y no el índice del arreglo. |
 
-## 7. Fuentes de consulta
+## 9. Fuentes de consulta
 
 - [Documentación oficial de React](https://react.dev/)
 - [Documentación oficial de Vite](https://vite.dev/)
