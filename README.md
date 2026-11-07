@@ -31,9 +31,21 @@ La aplicación se desarrolla como parte de la práctica **Desarrollo interactivo
 | Git | Control de versiones. |
 | GitHub | Alojamiento del repositorio. |
 
-## 2. Instalación y configuración
+## 2. Panorama de React (ficha técnica)
 
-### 2.1. Requisitos previos
+| Dato | Información |
+|---|---|
+| Origen | Creado por Jordan Walke en Facebook y liberado como código abierto en 2013. |
+| Mantenedor | Meta y una comunidad de colaboradores. |
+| Versión usada en el proyecto | Pendiente de registrar (campo `react` de `package.json`). |
+| Licencia | MIT |
+| Tipo | Librería para construir interfaces de usuario. |
+
+React es una **librería** enfocada en la vista. A diferencia de un framework completo como Angular, no incluye por sí sola enrutador ni cliente HTTP, por lo que esas funciones se resuelven con librerías adicionales (por ejemplo, React Router).
+
+## 3. Instalación y configuración
+
+### 3.1. Requisitos previos
 
 Antes de crear el proyecto, se verificó que Node.js, npm y Git estuvieran instalados en el equipo.
 
@@ -46,7 +58,7 @@ Versiones utilizadas:
 | Git | 2.55.0 |
 | create-vite (generador del proyecto) | 9.3.4 |
 | Vite (servidor de desarrollo) | 8.3.6 |
-| ESLint	| 10.14.0 |
+| ESLint | 10.14.0 |
 
 > `create-vite` y `Vite` son dos paquetes distintos: el primero genera el proyecto y el segundo lo ejecuta.
 
@@ -60,7 +72,7 @@ git --version
 
 ![Versiones utilizadas](docs/evidencias/versiones.png)
 
-### 2.2. Creación del proyecto
+### 3.2. Creación del proyecto
 
 Se utilizó Vite para crear el proyecto con la plantilla de React. Desde la terminal de Visual Studio Code se ejecutó:
 
@@ -83,22 +95,22 @@ npm install     # instala las dependencias
 npm run dev     # inicia el servidor de desarrollo
 ```
 
-### 2.3. Resultado de la instalación
+### 3.3. Resultado de la instalación
 
 La instalación finalizó correctamente y se visualizó la página inicial de React y Vite en el navegador.
 
 Esto permitió comprobar que el entorno de desarrollo estaba funcionando y que los cambios realizados en el código podían reflejarse automáticamente en el navegador mediante HMR (Hot Module Replacement).
 
-### 2.4. Tiempo de configuración inicial
+### 3.4. Tiempo de configuración inicial
 
 | Medición | Resultado |
 |---|---|
-| Inicio | Ejecución del comando npm create vite@latest . -- --template react |
-| Finalización | Primera ejecución exitosa de la aplicación en http://localhost:5173/ |
-| Tiempo total | Aproximadamente 3 a 5 minutos |
+| Inicio | Ejecución del comando `npm create vite@latest . -- --template react` |
+| Finalización | Primera ejecución exitosa de la aplicación en `http://localhost:5173/` |
+| Tiempo total | Aproximadamente 3 a 6 minutos |
 
 
-### 2.5. Evidencias de instalación
+### 3.5. Evidencias de instalación
 
 - `01-instalacion-react.png`: creación e instalación del proyecto con Vite.
 
@@ -108,7 +120,7 @@ Esto permitió comprobar que el entorno de desarrollo estaba funcionando y que l
 
 ![Visualización](docs/evidencias/02-aplicacion-ejecutando.png)
 
-## 3. Estructura inicial del proyecto
+## 4. Estructura inicial del proyecto
 
 El proyecto generado con Vite presenta una estructura organizada que separa los archivos principales de la aplicación, los estilos y los recursos estáticos.
 
@@ -131,7 +143,7 @@ gestor-tareas-react/
 └── vite.config.js
 ```
 
-### 3.1. Descripción de los archivos principales
+### 4.1. Descripción de los archivos principales
 
 | Archivo o carpeta | Función |
 |---|---|
@@ -148,13 +160,62 @@ gestor-tareas-react/
 | `vite.config.js` | Contiene la configuración de Vite. |
 | `eslint.config.js` | Configura las reglas de revisión del código. |
 
-## 4. Registro de dificultades y soluciones
+## 5. Hola mundo explicado
+
+### 5.1. Recorrido general
+
+```text
+index.html  →  main.jsx  →  App.jsx
+(div root)     (createRoot)   (componente)
+```
+
+1. El navegador abre `index.html`, que contiene un `<div id="root"></div>` vacío.
+2. La etiqueta `<script type="module" src="/src/main.jsx">` carga el archivo `main.jsx`.
+3. `main.jsx` toma el `root` y renderiza dentro el componente `<App />`.
+4. `App.jsx` devuelve el JSX que se convierte en lo que se ve en pantalla.
+
+### 5.2. `index.html`
+
+| Línea | Explicación |
+|---|---|
+| `<meta charset="UTF-8" />` | Define la codificación de caracteres para mostrar tildes y la ñ correctamente. |
+| `<meta name="viewport" ...>` | Hace que la página se adapte al ancho del dispositivo, necesario para el diseño responsive. |
+| `<title>` | Texto que aparece en la pestaña del navegador. |
+| `<div id="root"></div>` | Contenedor vacío donde React dibuja la aplicación. |
+| `<script type="module" src="/src/main.jsx">` | Carga el punto de entrada de la aplicación como módulo. Vite se encarga de traducir el JSX para el navegador. |
+
+### 5.3. `main.jsx`
+
+| Línea | Explicación |
+|---|---|
+| `import { StrictMode } from 'react'` | Importa `StrictMode`, una herramienta de React (import nombrado, va entre llaves). |
+| `import { createRoot } from 'react-dom/client'` | Importa la función que conecta React con el navegador. Está en `react-dom` porque React maneja los componentes y `react-dom` los dibuja en la página. |
+| `import './index.css'` | Carga los estilos globales. |
+| `import App from './App.jsx'` | Importa el componente principal (import por defecto, sin llaves). |
+| `createRoot(document.getElementById('root'))` | Busca el `div` con id `root` y crea ahí la raíz de la aplicación. |
+| `.render(<StrictMode><App /></StrictMode>)` | Dibuja `App` dentro de la raíz. `StrictMode` no se ve en pantalla: en desarrollo ayuda a detectar errores. |
+
+### 5.4. `App.jsx`
+
+| Elemento | Explicación |
+|---|---|
+| `function App() { ... }` | Un componente es una función que devuelve JSX. Su nombre empieza con mayúscula. |
+| `export default App` | Permite que `main.jsx` importe el componente. |
+| `const [count, setCount] = useState(0)` | `useState` crea un estado. `count` es el valor actual, `setCount` es la función para cambiarlo y `0` es el valor inicial. |
+| `return ( <> ... </> )` | Devuelve el JSX, una sintaxis parecida al HTML dentro de JavaScript. `<>...</>` es un fragment: agrupa elementos sin crear un `div` extra. |
+| `className` | En JSX se usa `className` en lugar de `class`, porque `class` es una palabra reservada de JavaScript. |
+| `{count}` | Las llaves insertan una expresión de JavaScript dentro del JSX. |
+| `onClick={() => setCount((count) => count + 1)}` | Evento de clic. Se pasa una función que actualiza el estado; al cambiar el estado, React vuelve a dibujar el componente con el nuevo valor. |
+| `import heroImg from './assets/hero.png'` | Importa una imagen para poder usarla en el JSX. |
+
+## 6. Registro de dificultades y soluciones
 
 | Dificultad encontrada | Solución aplicada |
 |---|---|
-| Al finalizar `npm install` apareció el aviso de 4 vulnerabilidades de severidad moderada. | Se ejecutó npm audit y se identificó que el origen era minimatch@10.2.6 (denegación de servicio por patrones), que llega como dependencia de eslint@10.14.0, una herramienta solo de desarrollo. Con npm audit --omit=dev se comprobó que las dependencias de producción tienen 0 vulnerabilidades. No se aplicó npm audit fix --force porque instalaría una versión anterior de ESLint (cambio incompatible) y podría romper la configuración. Se decidió mantener las versiones actuales y volver a revisar con npm audit más adelante.|
+| Al ejecutar `git commit` inicialmente apareció `nothing to commit`. | Se identificó que la carpeta todavía no contenía archivos del proyecto. Se continuó con la creación de React mediante Vite. |
+| Al finalizar `npm install` apareció el aviso de 4 vulnerabilidades moderadas. | Se ejecutó `npm audit` y se identificó que el origen era `minimatch@10.2.6` (denegación de servicio por patrones), que llega como dependencia de `eslint@10.14.0`, una herramienta solo de desarrollo. Con `npm audit --omit=dev` se comprobó que las dependencias de producción tienen 0 vulnerabilidades. No se aplicó `npm audit fix --force` porque instalaría una versión anterior de ESLint (cambio incompatible) y podría romper la configuración. Se decidió mantener las versiones actuales y volver a revisar con `npm audit` más adelante. |
 
-## 5. Fuentes de consulta
+## 7. Fuentes de consulta
 
 - [Documentación oficial de React](https://react.dev/)
 - [Documentación oficial de Vite](https://vite.dev/)
