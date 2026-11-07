@@ -47,3 +47,5 @@
 ## Bloque 5: Rutas Y API
 * **Enrutador:** Utilizamos `react-router-dom` para manejar la navegación entre las vistas de "listado" y "detalle" sin recargar la página.
 * **Error resuelto:** Al configurar las rutas, nos topamos con una pantalla negra y el error `Uncaught ReferenceError: Listado is not defined`. Lo solucionamos importando explícitamente los componentes al inicio de `App.jsx` y corrigiendo la sintaxis, ya que React exige que los componentes comiencen con letra mayúscula para no confundirlos con etiquetas HTML.
+
+* **Error resuelto:** Al correr las 3 pruebas unitarias, obtuvimos un TestingLibraryElementError: Found multiple elements porque los componentes no se desmontaban entre cada test. Lo solucionamos importando cleanup de @testing-library/react y ejecutándolo dentro de un bloque afterEach() para limpiar el DOM virtual.
