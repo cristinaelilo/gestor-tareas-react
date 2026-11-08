@@ -10,6 +10,8 @@ Este proyecto consiste en desarrollar una aplicación web para gestionar las tar
 La aplicación se desarrolla como parte de la práctica **Desarrollo interactivo de aplicaciones (Parte 1)**, cuyo objetivo es investigar y aprender el funcionamiento del framework React mediante la construcción de una aplicación funcional.
 
 - **Repositorio:** https://github.com/cristinaelilo/gestor-tareas-react
+- **Aplicación desplegada:** https://cristinaelilo.github.io/gestor-tareas-react/
+- **Cuaderno de NotebookLM:** https://notebook.google.com/notebook/2a781854-dfe3-440f-91d8-9f1af3dff7fd
 
 ### Integrantes
 
@@ -17,7 +19,7 @@ La aplicación se desarrolla como parte de la práctica **Desarrollo interactivo
 |---|---|
 | Cristina Loja (coordinadora) | Repositorio, estructura, componentes y estilos |
 | Denisse Paredes | Estado global, consumo de API y CRUD |
-| Brandon | Rutas, pruebas, despliegue y mediciones |
+| Brandon Collaguazo | Rutas, pruebas, despliegue y mediciones |
 
 ### Tecnologías utilizadas
 
@@ -28,6 +30,11 @@ La aplicación se desarrolla como parte de la práctica **Desarrollo interactivo
 | JavaScript | Lenguaje de programación. |
 | HTML | Estructura de la aplicación. |
 | CSS | Diseño y estilos. |
+| React Router | Rutas de la aplicación (listado y detalle). |
+| Context API | Estado global de las tareas. |
+| Vitest y React Testing Library | Pruebas unitarias. |
+| gh-pages | Despliegue en GitHub Pages. |
+| JSONPlaceholder | API REST pública de prueba. |
 | Git | Control de versiones. |
 | GitHub | Alojamiento del repositorio. |
 
@@ -37,7 +44,7 @@ La aplicación se desarrolla como parte de la práctica **Desarrollo interactivo
 |---|---|
 | Origen | Creado por Jordan Walke en Facebook y liberado como código abierto en 2013. |
 | Mantenedor | Meta y una comunidad de colaboradores. |
-| Versión usada en el proyecto | Pendiente de registrar (campo `react` de `package.json`). |
+| Versión usada en el proyecto | 19.3.1 (`"react": "^19.3.1"` en `package.json`) |
 | Licencia | MIT |
 | Tipo | Librería para construir interfaces de usuario. |
 
@@ -279,6 +286,8 @@ const [filtro, setFiltro] = useState('todas')
 
 ### 7.2. Estado compartido entre dos componentes
 
+*Versión inicial del filtro, antes de conectar la API y el Context API (sección 10.7).*
+
 El filtro lo cambia `TaskFilter` y lo necesita `TaskList`. Como ambos son hijos de `App`, el estado se guarda en `App` y se les pasa por props:
 
 ```jsx
@@ -319,7 +328,7 @@ Se usaron reglas de CSS propio y una media query (`@media (max-width: 600px)`) p
 
 ### 7.4. Estado global
 
-*Pendiente: se documentará cuando se implemente el estado global de las tareas (Context API o Zustand).*
+El estado compartido se amplió con Context API para que cualquier componente acceda a las tareas, al filtro y a los estados de carga y error. La implementación se describe en la sección 10.7.
 
 ## 8. Registro de dificultades y soluciones
 
@@ -328,6 +337,8 @@ Se usaron reglas de CSS propio y una media query (`@media (max-width: 600px)`) p
 | Al ejecutar `git commit` inicialmente apareció `nothing to commit`. | Se identificó que la carpeta todavía no contenía archivos del proyecto. Se continuó con la creación de React mediante Vite. |
 | Al finalizar `npm install` apareció el aviso de 4 vulnerabilidades moderadas. | Se ejecutó `npm audit` y se identificó que el origen era `minimatch@10.2.6` (denegación de servicio por patrones), que llega como dependencia de `eslint@10.14.0`, una herramienta solo de desarrollo. Con `npm audit --omit=dev` se comprobó que las dependencias de producción tienen 0 vulnerabilidades. No se aplicó `npm audit fix --force` porque instalaría una versión anterior de ESLint (cambio incompatible) y podría romper la configuración. Se decidió mantener las versiones actuales y volver a revisar con `npm audit` más adelante. |
 | En la consola apareció el error `Each child in a list should have a unique "key" prop` al renderizar `TaskList` con `.map()`. | Se agregó la prop `key={tarea.id}` a cada `TaskItem`. React usa `key` para identificar cada elemento de la lista y saber cuál cambió, se agregó o se eliminó. Debe ser único entre hermanos y estable, por eso se usa el `id` de la tarea y no el índice del arreglo. |
+| Al hacer commit, Git mostró `LF will be replaced by CRLF`. | Es una advertencia por la diferencia de saltos de línea entre sistemas (Windows usa CRLF, Linux y Mac usan LF). No afecta al código; se puede evitar con `git config core.autocrlf true`. |
+| Tras hacer `git pull`, la aplicación mostró `Failed to resolve import "react-router-dom"`. | Las dependencias nuevas agregadas por otros integrantes no estaban instaladas en el equipo local, porque `node_modules` no se sube a Git. Se solucionó ejecutando `npm install`. |
 | Al configurar las rutas, la aplicación mostró una pantalla negra y el error `Uncaught ReferenceError: Listado is not defined`. | Se solucionó importando explícitamente los componentes al inicio de `App.jsx` y corrigiendo la sintaxis física de los archivos, ya que React exige que los nombres de los componentes comiencen con letra mayúscula para no confundirlos con etiquetas HTML. |
 | Al correr las pruebas unitarias, Vitest arrojó el error `TestingLibraryElementError: Found multiple elements` al encontrar textos duplicados. | Ocurrió porque los componentes no se desmontaban entre cada test. Se solucionó importando `cleanup` de `@testing-library/react` y ejecutándolo dentro de un bloque `afterEach()` para limpiar el DOM virtual. |
 
@@ -337,6 +348,12 @@ Se usaron reglas de CSS propio y una media query (`@media (max-width: 600px)`) p
 - [Documentación oficial de Vite](https://vite.dev/)
 - [Documentación de npm](https://docs.npmjs.com/)
 - [Documentación de ESLint](https://eslint.org/)
+- [Documentación de React Router](https://reactrouter.com/)
+- [Documentación de Vitest](https://vitest.dev/guide/)
+- [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
+- [Vite – Despliegue de sitios estáticos](https://vite.dev/guide/static-deploy)
+- [React Basics: How & When to Use React Context (Telerik)](https://www.telerik.com/blogs/react-basics-how-when-use-react-context)
+- [Deploy Vite React project with React Router without 404 on GitHub Pages (DEV Community)](https://dev.to/avithe1/deploy-vite-react-project-with-react-router-without-404-on-github-pages-h6p)
 
 
 
@@ -486,7 +503,7 @@ En `TaskItem.jsx` se agregó el botón **Editar**, que permite modificar el tít
 
 **Evidencia de edición de tareas:**
 
-![Edición de tareas con PUT](docs/evidencias/12-Editar-Tarea.png)
+![Edición de tareas con PUT](docs/evidencias/12-Editar%20Tarea.png)
 
 ### 10.5. Cambio de estado de las tareas
 
@@ -644,11 +661,11 @@ También se creó un Pull Request dirigido a la rama `main` para integrar el tra
 - [React – useEffect](https://react.dev/reference/react/useEffect)
 - [MDN – Fetch API](https://developer.mozilla.org/es/docs/Web/API/Fetch_API)
 - [JSONPlaceholder](https://jsonplaceholder.typicode.com/)
->>>>>>> 724d2c2b3f9269572984145e133aec56446036b8
+
 
 ## 11. Rutas, Pruebas y Despliegue
 ### 11.1 Enrutamiento dinámico con React Router
-Para manejar la navegación sin recargar la página,se implementó la librería `react-router-dom`. La aplicación se envolvió en un componente `<BrowserRouter>` configurado con el `basename="/gestor-tareas-react"` para asegurar compatibilidad con el subdirectorio de GitHub Pages.
+Para manejar la navegación sin recargar la página, se implementó la librería `react-router-dom`. La aplicación se envolvió en un componente `<BrowserRouter>` configurado con el `basename="/gestor-tareas-react"` para asegurar compatibilidad con el subdirectorio de GitHub Pages.
 
 Se definieron dos rutas principales mediante `<Routes>`:
 * **Ruta principal (`/`):** Renderiza la vista general con la lista de tareas, el formulario y los filtros.
@@ -669,6 +686,8 @@ El proceso consistió en:
 2. Agregar los scripts `predeploy` (para ejecutar `npm run build`) y `deploy` (para subir la carpeta `dist`) en el archivo `package.json`.
 3. Ejecutar el comando de despliegue, el cual generó los archivos estáticos optimizados y los envió a la rama `gh-pages` del repositorio.
 
+**URL pública de la aplicación:** https://cristinaelilo.github.io/gestor-tareas-react/
+
 ## 12. Mediciones Técnicas Globales
 | Métrica | Cómo medirla | Resultado |
 | :--- | :--- | :--- |
@@ -679,7 +698,17 @@ El proceso consistió en:
 | Horas totales del grupo | Registro de horas por integrante | 18 horas |
 | Dificultad percibida (1 a 5) | Promedio de los integrantes | 3.8/5 |
 
-# 13. Uso de IA
+### 12.1. Registro por integrante
+
+| Integrante | Horas | Dificultad (1 a 5) |
+|---|---|---|
+| Cristina Loja | 6 | 3|
+| Denisse Paredes | 6 | 4|
+| Brandon | 6 | 4.5 |
+| **Total / promedio** | **18** | **3.8** |
+
+
+## 13. Uso de IA
 En este proyecto utilizamos Inteligencia Artificial (Gemini / ChatGPT) estrictamente como compañera de estudio y asistencia técnica, verificando cada solución con la documentación oficial de React y Vite, cumpliendo con los lineamientos de la rúbrica:
 
 * **Comprensión de conceptos:** Se utilizó para entender el flujo de datos del `Context API` y cómo integrarlo sin romper la lógica del CRUD existente.
@@ -687,3 +716,31 @@ En este proyecto utilizamos Inteligencia Artificial (Gemini / ChatGPT) estrictam
   * *Prompt de ejemplo:* "Me sale el error 'TestingLibraryElementError: Found multiple elements' al correr mis tests en Vitest. ¿Cómo limpio el DOM virtual entre cada prueba?"
   * *Solución aplicada:* Nos guio para implementar el método `cleanup` dentro de un `afterEach()` en el entorno de pruebas.
 * **Configuración de Despliegue:** Se consultó la forma correcta de configurar la propiedad `base` en `vite.config.js` y el `basename` en `react-router-dom` para evitar el error 404 al subir la app a GitHub Pages en un subdirectorio.
+
+### 13.1. NotebookLM
+
+Se creó un cuaderno de grupo con 16 fuentes: la documentación oficial de React (*Your First Component*, *Passing Props*, *Conditional Rendering*, *Rendering Lists*, *State: A Component's Memory*, *Sharing State Between Components*, *Passing Data Deeply with Context* y *Synchronizing with Effects*), la documentación de React Router, Vitest, React Testing Library, Vite (despliegue) y MDN (Fetch API), dos artículos técnicos (Telerik y DEV Community) y el README de este repositorio.
+
+**Enlace al cuaderno:** https://notebook.google.com/notebook/2a781854-dfe3-440f-91d8-9f1af3dff7fd
+
+Con el cuaderno se generó una guía de estudio en español con el siguiente prompt:
+
+> "Genera una guía de estudio en español sobre React basada en mis fuentes. Incluye: conceptos clave (componentes, props, estado, useEffect, Context API, React Router, pruebas y despliegue), un glosario de términos y 10 preguntas de repaso con sus respuestas."
+
+Además, se le hicieron preguntas sobre temas del proyecto, revisando las citas que indica cada respuesta en la fuente original:
+
+| Pregunta al cuaderno | Resumen de la respuesta | Fuente donde se verificó |
+|---|---|---|
+| ¿Cuándo conviene usar Context API en lugar de pasar props? | Conviene cuando varios componentes en distintos niveles necesitan los mismos datos (usuario, tema, idioma, ruta), para evitar el *prop drilling*. Si los datos solo pasan de padre a hijo, es mejor usar props. | *Passing Data Deeply with Context* (react.dev) y artículo de Telerik |
+| ¿Para qué sirve `cleanup` en las pruebas con React Testing Library? | Desmonta los componentes renderizados y limpia el DOM virtual entre pruebas, evitando errores por elementos duplicados como `Found multiple elements`. Se ejecuta dentro de un `afterEach()`. | Documentación de React Testing Library |
+| ¿Por qué es necesaria la prop `key` al renderizar listas con `map`? | Identifica de forma única cada elemento para que React detecte qué cambió, se agregó o se eliminó, y conserve el estado local. Debe ser estable y única; no conviene usar el índice del arreglo. | *Rendering Lists* (react.dev) |
+
+También se consultó sobre el uso de `basename` en React Router, el arreglo de dependencias de `useEffect` y la diferencia entre props y estado.
+
+**Evidencias del cuaderno:**
+
+![Pregunta sobre Context API](docs/evidencias/16-notebooklm-context.png)
+
+![Pregunta sobre cleanup](docs/evidencias/17-notebooklm-cleanup.png)
+
+![Pregunta sobre key](docs/evidencias/18-notebooklm-key.png)
