@@ -120,7 +120,7 @@ function App() {
   };
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename='/gestor-tareas-react'>
 
       <Routes>
         <Route path="/" element={<VistaPrincipal />} />

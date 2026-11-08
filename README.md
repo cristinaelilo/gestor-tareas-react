@@ -646,12 +646,44 @@ También se creó un Pull Request dirigido a la rama `main` para integrar el tra
 - [JSONPlaceholder](https://jsonplaceholder.typicode.com/)
 >>>>>>> 724d2c2b3f9269572984145e133aec56446036b8
 
-## 11. Mediciones técnicas
+## 11. Rutas, Pruebas y Despliegue
+### 11.1 Enrutamiento dinámico con React Router
+Para manejar la navegación sin recargar la página,se implementó la librería `react-router-dom`. La aplicación se envolvió en un componente `<BrowserRouter>` configurado con el `basename="/gestor-tareas-react"` para asegurar compatibilidad con el subdirectorio de GitHub Pages.
+
+Se definieron dos rutas principales mediante `<Routes>`:
+* **Ruta principal (`/`):** Renderiza la vista general con la lista de tareas, el formulario y los filtros.
+* **Ruta detalle (`/detalle/:id`):** Renderiza el componente `Detalle.jsx`, el cual utiliza el hook `useParams()` para capturar el identificador dinámico de la URL, buscar la tarea específica en el estado global (`useTareas`) y mostrar información ampliada.
+
+En cada elemento de la lista (`TaskItem.jsx`) se incorporó un componente `<Link>` que dirige dinámicamente a los detalles de cada tarea, mejorando la experiencia de usuario (UX).
+
+### 11.2. Pruebas Unitarias con Vitest
+Se configuró un entorno de pruebas unitarias utilizando **Vitest** y **React Testing Library**. Se implementaron tests para verificar el correcto renderizado de la interfaz y la presencia de los elementos principales.
+
+Durante la ejecución, se detectó un problema de duplicación de elementos en el DOM virtual que provocaba fallos (`TestingLibraryElementError: Found multiple elements`). Para solucionarlo, se importó el método `cleanup` y se ejecutó dentro de un bloque `afterEach()` en el archivo de configuración, garantizando que el entorno se limpie entre cada prueba. Las pruebas unitarias finalizaron exitosamente (3/3 en verde).
+
+### 11.3. Despliegue a producción en GitHub Pages
+Para que la aplicación sea accesible públicamente, se configuró el despliegue automático mediante el paquete `gh-pages`.
+
+El proceso consistió en:
+1. Configurar la propiedad `base: '/gestor-tareas-react/'` en el archivo `vite.config.js`.
+2. Agregar los scripts `predeploy` (para ejecutar `npm run build`) y `deploy` (para subir la carpeta `dist`) en el archivo `package.json`.
+3. Ejecutar el comando de despliegue, el cual generó los archivos estáticos optimizados y los envió a la rama `gh-pages` del repositorio.
+
+## 12. Mediciones Técnicas Globales
 | Métrica | Cómo medirla | Resultado |
 | :--- | :--- | :--- |
-| Tiempo de configuración inicial (min) | Desde instalar hasta ver corriendo | [Minutos] |
-| Líneas de código (LOC) | `npx cloc src` | ~40 líneas |
+| Tiempo de configuración inicial (min) | Desde instalar hasta ver corriendo | 3 a 6 minutos |
+| Líneas de código (LOC) | `npx cloc src` o conteo manual | ~40 líneas (Módulo de rutas y detalle) |
 | Tamaño del build de producción (KB) | Carpeta dist tras el build | JS: 257.95 kB / CSS: 1.78 kB |
-| Puntaje de rendimiento Lighthouse | Chrome Dev Tools, modo móvil | Pendiente |
+| Puntaje de rendimiento Lighthouse | Chrome Dev Tools, modo móvil | 96/100 (Performance) |
 | Horas totales del grupo | Registro de horas por integrante | Pendiente |
 | Dificultad percibida (1 a 5) | Promedio de los integrantes | Pendiente |
+
+# 13. Uso de IA
+En este proyecto utilizamos Inteligencia Artificial (Gemini / ChatGPT) estrictamente como compañera de estudio y asistencia técnica, verificando cada solución con la documentación oficial de React y Vite, cumpliendo con los lineamientos de la rúbrica:
+
+* **Comprensión de conceptos:** Se utilizó para entender el flujo de datos del `Context API` y cómo integrarlo sin romper la lógica del CRUD existente.
+* **Resolución de errores (Debugging):** 
+  * *Prompt de ejemplo:* "Me sale el error 'TestingLibraryElementError: Found multiple elements' al correr mis tests en Vitest. ¿Cómo limpio el DOM virtual entre cada prueba?"
+  * *Solución aplicada:* Nos guio para implementar el método `cleanup` dentro de un `afterEach()` en el entorno de pruebas.
+* **Configuración de Despliegue:** Se consultó la forma correcta de configurar la propiedad `base` en `vite.config.js` y el `basename` en `react-router-dom` para evitar el error 404 al subir la app a GitHub Pages en un subdirectorio.
