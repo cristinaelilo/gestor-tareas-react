@@ -676,8 +676,8 @@ El proceso consistió en:
 | Líneas de código (LOC) | `npx cloc src` o conteo manual | ~40 líneas (Módulo de rutas y detalle) |
 | Tamaño del build de producción (KB) | Carpeta dist tras el build | JS: 257.95 kB / CSS: 1.78 kB |
 | Puntaje de rendimiento Lighthouse | Chrome Dev Tools, modo móvil | 96/100 (Performance) |
-| Horas totales del grupo | Registro de horas por integrante | Pendiente |
-| Dificultad percibida (1 a 5) | Promedio de los integrantes | Pendiente |
+| Horas totales del grupo | Registro de horas por integrante | 18 horas |
+| Dificultad percibida (1 a 5) | Promedio de los integrantes | 3.8/5 |
 
 # 13. Uso de IA
 En este proyecto utilizamos Inteligencia Artificial (Gemini / ChatGPT) estrictamente como compañera de estudio y asistencia técnica, verificando cada solución con la documentación oficial de React y Vite, cumpliendo con los lineamientos de la rúbrica:
