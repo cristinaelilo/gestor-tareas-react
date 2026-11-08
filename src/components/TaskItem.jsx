@@ -1,4 +1,5 @@
 
+import { Link } from 'react-router-dom';
 import { useState } from 'react'
 
 function TaskItem({
@@ -128,6 +129,13 @@ function TaskItem({
           >
             Eliminar
           </button>
+
+          <Link
+            to={`/detalle/${id}`}
+            style={{ marginLeft: '5px', padding: '3px 8px', border: '1px solid #ccc', textDecoration: 'none', color: '#333', background: '#f8f9fa', borderRadius: '4px', fontSize: '13px' }}
+          >
+            Ver detalles
+          </Link>
         </>
       )}
     </li>
